@@ -37,3 +37,33 @@ class SkierClass(pygame.sprite.Sprite):
     def setForward(self):
         self.direction = 0
         self.image = pygame.image.load(self.imagepaths[self.direction])
+        
+class ObstacleClass(pygame.sprite.Sprite):
+    def __ini__(self, img_path,location,attribute):
+        pygame.sprite.Sprite.__init__(self)
+        self.img_path = img_path
+        self.image = pygame.image.load(self.img_path)
+        self.location = location
+        self.rect = self.image.get_rect()
+        self.rect.center = self.location
+        self.attribute = attribute
+        self.passed = False
+    
+    def move(self, num):
+        self.rect.center = self.location[1] - num
+
+def createObstacles(s, e, num=10):
+    obstacles = pygame.sprite.Group()
+    locations = []
+    
+    for i in range(num):
+        row = random.randint(s, e) 
+        col = random.randint(0, 9)
+        location = [col*64+20, row*64+20]
+        if location not in locations:
+            locations.append(location)
+            attribute = random.choice(list(cfg.OBSTICLE_PATHS.keys()))
+            img_path = cfg.OBSTICLE_PATHS[attribute]
+            obstacle = ObstacleClass(img_path, location, attribute)
+            obstacles.add(obstacle)
+    return obstacles
