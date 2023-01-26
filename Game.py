@@ -67,3 +67,12 @@ def createObstacles(s, e, num=10):
             obstacle = ObstacleClass(img_path, location, attribute)
             obstacles.add(obstacle)
     return obstacles
+
+def AddObstacles(Obstacles0, Obstacles1):
+    obstacles = pygame.sprite.Group
+    for obstacle in Obstacles0:
+        obstacles.add(obstacle)
+    for obstacle in Obstacles1:
+        obstacles.add(obstacle)
+    return obstacles
+    
