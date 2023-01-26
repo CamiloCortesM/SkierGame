@@ -160,10 +160,24 @@ def main():
                 obstacle.location[1] = obstacle.location[1] - 1280
             obstacles1 = createObstacles(10,19) 
             obstacles = AddObstacles(obstacles0,obstacles1)
-        
-        print(obstacles)
+    
         for obstacle in obstacles:
             obstacle.move(distance)
+        
+        hitted_obstacles = pygame.sprite.spritecollide(skier, obstacles, False)
+        
+        if hitted_obstacles:
+            if hitted_obstacles[0].attribute =="tree" and not hitted_obstacles[0].passed:
+                score -=50
+                skier.setFall()
+                updateFrame(screen,obstacles,skier,score)
+                pygame.time.delay(1000)
+                skier.setForward()
+                speed = [0, 6]
+                hitted_obstacles[0].passed = True
+            elif hitted_obstacles[0].attribute == "flag" and not hitted_obstacles[0].passed:
+                score +=10
+                obstacles.remove(hitted_obstacles[0])
         
         updateFrame(screen,obstacles,skier,score)         
         clock.tick(cfg.FPS)
