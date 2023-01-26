@@ -101,6 +101,41 @@ def ShowStartInterface(screen, screensize):
 def showScore(screen,score, pos=(10,10)):
     font = pygame.font.Font(cfg.FONTPATH, 30)
     score_text = font.render('Score: %s' % score, True, (0,0,0))
+    screen.blit(score_text,pos)
     
+def updateFrame(screen, obstacles, skier, score):
+    screen.fill((255,255,255))
+    obstacles.draw(screen)
+    screen.blit(skier.image, skier.rect)
+    showScore(screen, score)
+    pygame.display.update()
 
+def main():
     
+    pygame.init()
+    pygame.mixer.init()
+    pygame.mixer.music.load(cfg.BGMPATH)
+    pygame.mixer.music.set_volume(0.4)
+    pygame.mixer.music.play(-1)
+    
+    screen = pygame.display.set_mode(cfg.SCREENSIZE)
+    pygame.display.set_caption('Skier Game')
+    
+    ShowStartInterface(screen, cfg.SCREENSIZE)
+    
+    skier = SkierClass()
+    
+    obstacles0 = createObstacles(20,29)
+    obstacles1 = createObstacles(10,19)
+    obstaclesflag = 0
+    obstacles = AddObstacles(obstacles0,obstacles1)
+    
+    clock = pygame.time.Clock()
+    
+    distance = 0
+    score = 0
+    speed = [0,6]
+
+
+if __name__ =='__main__':
+    main()
