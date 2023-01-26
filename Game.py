@@ -39,7 +39,7 @@ class SkierClass(pygame.sprite.Sprite):
         self.image = pygame.image.load(self.imagepaths[self.direction])
         
 class ObstacleClass(pygame.sprite.Sprite):
-    def __ini__(self, img_path,location,attribute):
+    def __init__(self, img_path,location,attribute):
         pygame.sprite.Sprite.__init__(self)
         self.img_path = img_path
         self.image = pygame.image.load(self.img_path)
@@ -50,26 +50,25 @@ class ObstacleClass(pygame.sprite.Sprite):
         self.passed = False
     
     def move(self, num):
-        self.rect.center = self.location[1] - num
+        self.rect.centery = self.location[1] - num
 
 def createObstacles(s, e, num=10):
     obstacles = pygame.sprite.Group()
     locations = []
-    
     for i in range(num):
-        row = random.randint(s, e) 
+        row = random.randint(s, e)
         col = random.randint(0, 9)
-        location = [col*64+20, row*64+20]
+        location  = [col*64+20, row*64+20]
         if location not in locations:
             locations.append(location)
-            attribute = random.choice(list(cfg.OBSTICLE_PATHS.keys()))
-            img_path = cfg.OBSTICLE_PATHS[attribute]
+            attribute = random.choice(list(cfg.OBSTACLE_PATHS.keys()))
+            img_path = cfg.OBSTACLE_PATHS[attribute]
             obstacle = ObstacleClass(img_path, location, attribute)
             obstacles.add(obstacle)
     return obstacles
 
 def AddObstacles(Obstacles0, Obstacles1):
-    obstacles = pygame.sprite.Group
+    obstacles = pygame.sprite.Group()
     for obstacle in Obstacles0:
         obstacles.add(obstacle)
     for obstacle in Obstacles1:
@@ -125,16 +124,49 @@ def main():
     
     skier = SkierClass()
     
-    obstacles0 = createObstacles(20,29)
-    obstacles1 = createObstacles(10,19)
+    obstacles0 = createObstacles(20, 29)
+    obstacles1 = createObstacles(10, 19)
     obstaclesflag = 0
     obstacles = AddObstacles(obstacles0,obstacles1)
     
     clock = pygame.time.Clock()
     
     distance = 0
+    
     score = 0
     speed = [0,6]
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    speed = skier.turn(-1)
+                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    speed = skier.turn(1)
+        skier.move()
+        distance += speed[1]
+        if distance >= 640 and obstaclesflag == 0:
+            obstaclesflag = 1
+            obstacles0 = createObstacles(20, 29)
+            obstacles = AddObstacles(obstacles0,obstacles1)  
+        
+        if distance >= 1280 and obstaclesflag == 1:
+            obstaclesflag = 0
+            distance -= 1280
+            for obstacle in obstacles0:
+                obstacle.location[1] = obstacle.location[1] - 1280
+            obstacles1 = createObstacles(10,19) 
+            obstacles = AddObstacles(obstacles0,obstacles1)
+        
+        print(obstacles)
+        for obstacle in obstacles:
+            obstacle.move(distance)
+        
+        updateFrame(screen,obstacles,skier,score)         
+        clock.tick(cfg.FPS)
 
 
 if __name__ =='__main__':

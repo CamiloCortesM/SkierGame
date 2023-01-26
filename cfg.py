@@ -12,7 +12,7 @@ SKIER_IMAGES_PATHS = [
     os.path.join(os.getcwd(),'resources','images','skier_fall.png'),
 ]
 
-OBSTICLE_PATHS = {
+OBSTACLE_PATHS = {
     'tree': os.path.join(os.getcwd(),'resources','images','tree.png'),
     'flag': os.path.join(os.getcwd(),'resources','images','flag.png'),
 }
