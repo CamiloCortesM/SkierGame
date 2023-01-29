@@ -7,7 +7,6 @@ import random
 class SkierClass(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        
         self.direction = 0
         self.imagepaths = cfg.SKIER_IMAGES_PATHS[:-1]
         self.image = pygame.image.load(self.imagepaths[self.direction])
@@ -36,7 +35,9 @@ class SkierClass(pygame.sprite.Sprite):
     
     def setForward(self):
         self.direction = 0
+        self.speed = [self.direction, 6-abs(self.direction)*2]
         self.image = pygame.image.load(self.imagepaths[self.direction])
+        return self.speed
         
 class ObstacleClass(pygame.sprite.Sprite):
     def __init__(self, img_path,location,attribute):
@@ -147,11 +148,12 @@ def main():
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     speed = skier.turn(1)
         skier.move()
-        distance += speed[1]
+        distance += speed[1]     
         if distance >= 640 and obstaclesflag == 0:
             obstaclesflag = 1
             obstacles0 = createObstacles(20, 29)
             obstacles = AddObstacles(obstacles0,obstacles1)  
+            print("hello")
         
         if distance >= 1280 and obstaclesflag == 1:
             obstaclesflag = 0
@@ -165,15 +167,13 @@ def main():
             obstacle.move(distance)
         
         hitted_obstacles = pygame.sprite.spritecollide(skier, obstacles, False)
-        
         if hitted_obstacles:
             if hitted_obstacles[0].attribute =="tree" and not hitted_obstacles[0].passed:
                 score -=50
                 skier.setFall()
                 updateFrame(screen,obstacles,skier,score)
                 pygame.time.delay(1000)
-                skier.setForward()
-                speed = [0, 6]
+                speed = skier.setForward()
                 hitted_obstacles[0].passed = True
             elif hitted_obstacles[0].attribute == "flag" and not hitted_obstacles[0].passed:
                 score +=10
